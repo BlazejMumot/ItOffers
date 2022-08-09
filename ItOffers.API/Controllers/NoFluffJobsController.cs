@@ -20,6 +20,7 @@ namespace ItOffers.Controllers
         [HttpGet]
         public Guid GetGuid()
         {
+            //test
         var scrappOffersFeature = new ScrappOffersFeature();
         scrappOffersFeature.GetOffersfromWebistesAsync();
             return Guid.NewGuid();
