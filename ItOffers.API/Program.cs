@@ -16,6 +16,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+string? port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port)) { app.Urls.Add("http://*:" + port); }
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -23,3 +26,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
