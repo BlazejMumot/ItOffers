@@ -7,7 +7,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.WebHost.ConfigureKestrel(c =>
+{
+    c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
+});
+
 var app = builder.Build();
+
+string? port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port)) { app.Urls.Add("http://*:" + port); }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -16,12 +25,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-string? port = Environment.GetEnvironmentVariable("PORT");
-if (!string.IsNullOrWhiteSpace(port)) { app.Urls.Add("http://*:" + port); }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
