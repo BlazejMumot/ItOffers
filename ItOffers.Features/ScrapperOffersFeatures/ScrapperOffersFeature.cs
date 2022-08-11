@@ -22,7 +22,7 @@ namespace ItOffers.Features.ScrapperOffersFeatures
             collection.InsertMany(offersNoFluff);
 
             var logsCollection = database.GetCollection<LogsModel>("Logs");
-            logsCollection.InsertOne(new LogsModel(){ Action="Add Backend Offers No FluffJobs",DateTime =DateTime.Now});
+            logsCollection.InsertOne(new LogsModel(){ Action="Add Offers",Type="Backend",Site="NoFluffJobs",Amount=offersNoFluff.ToArray().Length,DateTime =DateTime.Now});
 
             return Guid.Empty;
         }
