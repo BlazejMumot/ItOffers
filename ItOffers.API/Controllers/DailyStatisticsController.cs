@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ItOffers.Features.ScrapperOffersFeatures;
+using ItOffers.Features.StatisticsFeatures.Commands;
 
 
 namespace ItOffers.API.Controllers
@@ -15,12 +15,12 @@ namespace ItOffers.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpPost]
         public bool Get()
         {
-            var scrappOffersFeature = new ScrappOffersFeature();
-            scrappOffersFeature.GetOffersfromWebistesAsync();
-            return Guid.NewGuid();
+            var statisticsFeatures = new PostNewStatisticsCommand();
+            statisticsFeatures.CreateStatistics();
+            return true;
         }
     }
 }

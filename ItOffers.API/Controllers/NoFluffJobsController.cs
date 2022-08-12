@@ -17,13 +17,12 @@ namespace ItOffers.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public Guid GetGuid()
+        [HttpPost]
+        public bool GetGuid()
         {
-
             var scrappOffersFeature = new ScrappOffersFeature();
-            scrappOffersFeature.GetOffersfromWebistesAsync();
-            return Guid.NewGuid();
+            var result = scrappOffersFeature.GetOffersfromWebistesAsync();
+            return result;
         }
 
     }
