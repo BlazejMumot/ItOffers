@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ItOffers.Features.ScrapperOffersFeatures;
+using MediatR;
+using ItOffers.Features.ScrapperOffersFeatures.Commands;
 
 namespace ItOffers.Controllers
 {
@@ -9,19 +10,18 @@ namespace ItOffers.Controllers
     [Route("[controller]")]
     public class NoFluffJobsController : ControllerBase
     {
-           
-        private readonly ILogger<NoFluffJobsController> _logger;
 
-        public NoFluffJobsController(ILogger<NoFluffJobsController> logger)
+        private readonly IMediator _mediator;
+
+        public NoFluffJobsController(IMediator mediator)
         {
-            _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public bool GetGuid()
+        public async Task<bool> PostNoFluffJobsOffers()
         {
-            var scrappOffersFeature = new ScrappOffersFeature();
-            var result = scrappOffersFeature.GetOffersfromWebistesAsync();
+            var result = await _mediator.Send(new ScrappNoFluffJobsCommand());
             return result;
         }
 
