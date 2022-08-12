@@ -6,7 +6,7 @@ namespace ItOffers.Features.ScrapperOffersFeatures
 {
     public class ScrappOffersFeature
     {
-        public Guid GetOffersfromWebistesAsync()
+        public bool GetOffersfromWebistesAsync()
         {
             var settings = MongoClientSettings.FromConnectionString("mongodb+srv://tofik:piesek@cluster0.fcnjisn.mongodb.net/?retryWrites=true&w=majority");
             var client = new MongoClient(settings);
@@ -24,7 +24,7 @@ namespace ItOffers.Features.ScrapperOffersFeatures
             var logsCollection = database.GetCollection<LogsModel>("Logs");
             logsCollection.InsertOne(new LogsModel(){ Action="Add Offers",Type="Backend",Site="NoFluffJobs",Amount=offersNoFluff.ToArray().Length,DateTime =DateTime.Now});
 
-            return Guid.Empty;
+            return true;
         }
 
     }
