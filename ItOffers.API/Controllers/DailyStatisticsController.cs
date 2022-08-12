@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ItOffers.Features.ScrapperOffersFeatures;
 
-namespace ItOffers.Controllers
+
+namespace ItOffers.API.Controllers
 {
-    
-    
     [ApiController]
     [Route("[controller]")]
-    public class NoFluffJobsController : ControllerBase
+    public class DailyStatisticsController : ControllerBase
     {
-           
-        private readonly ILogger<NoFluffJobsController> _logger;
+        private readonly ILogger<DailyStatisticsController> _logger;
 
-        public NoFluffJobsController(ILogger<NoFluffJobsController> logger)
+        public DailyStatisticsController(ILogger<DailyStatisticsController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public Guid GetGuid()
+        public bool Get()
         {
-
             var scrappOffersFeature = new ScrappOffersFeature();
             scrappOffersFeature.GetOffersfromWebistesAsync();
             return Guid.NewGuid();
         }
-
     }
-    
 }
