@@ -1,38 +1,42 @@
 ﻿using ItOffers.Models.Models;
+using MediatR;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ItOffers.Features.StatisticsFeatures.Commands
 {
-    public class PostNewStatisticsCommand
+    public class PostNewStatisticsCommand : IRequest<bool>
     {
-        public bool CreateStatistics()
+        public class PostNewStatisticsCommandHandler : IRequestHandler<PostNewStatisticsCommand, bool>
         {
-            var settings = MongoClientSettings.FromConnectionString("mongodb+srv://tofik:piesek@cluster0.fcnjisn.mongodb.net/?retryWrites=true&w=majority");
-            var client = new MongoClient(settings);
-            var database = client.GetDatabase("ItScrapper");
-            var collection = database.GetCollection<GetOfferModel>("BackendOffers").AsQueryable<GetOfferModel>().ToArray();
-            var avgSalary = collection.Select(o => o.AvgSalary).Average();
-            var avgSeniority = collection.GroupBy(o => o.Seniority).Select(g => new { Key = g.Key, Count = g.Count() }).OrderByDescending(x => x.Count).Take(3).ToList();
-            var statCollection = database.GetCollection<StatisticsModel>("Statistics");
-            statCollection.InsertOne(new StatisticsModel()
+            private IMongoClient _mongoClient;
+
+            public PostNewStatisticsCommandHandler(IMongoClient mongoClient)
             {
-                Type = "Backend",
-                Amount = collection.Length,
-                AvgSalary = avgSalary,
-                MostSeniorityOffers = avgSeniority[0].Key,
-                MostSeniorityOffersCount = avgSeniority[0].Count,
-                SecondSeniorityOffers = avgSeniority[1].Key,
-                SecondSeniorityOffersCount = avgSeniority[1].Count,
-                LeastSeniorityOffers = avgSeniority[2].Key,
-                LeastSeniorityOffersCount = avgSeniority[2].Count,
-                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
-        });
-            return true;
+                _mongoClient = mongoClient;
+            }
+
+            public async Task<bool> Handle(PostNewStatisticsCommand request, CancellationToken cancellationToken)
+            {
+                var database = _mongoClient.GetDatabase("ItScrapper");
+                var collection = database.GetCollection<GetOfferModel>("BackendOffers").AsQueryable<GetOfferModel>().ToArray();
+                var avgSalary = collection.Select(o => o.AvgSalary).Average();
+                var avgSeniority = collection.GroupBy(o => o.Seniority).Select(g => new { Key = g.Key, Count = g.Count() }).OrderByDescending(x => x.Count).Take(3).ToList();
+                var statCollection = database.GetCollection<StatisticsModel>("Statistics");
+                statCollection.InsertOne(new StatisticsModel()
+                {
+                    Type = "Backend",
+                    Amount = collection.Length,
+                    AvgSalary = avgSalary,
+                    MostSeniorityOffers = avgSeniority[0].Key,
+                    MostSeniorityOffersCount = avgSeniority[0].Count,
+                    SecondSeniorityOffers = avgSeniority[1].Key,
+                    SecondSeniorityOffersCount = avgSeniority[1].Count,
+                    LeastSeniorityOffers = avgSeniority[2].Key,
+                    LeastSeniorityOffersCount = avgSeniority[2].Count,
+                    CreatedAt = DateTime.Now,
+                });
+                return true;
+            }
         }
     }
 }

@@ -1,3 +1,7 @@
+using MediatR;
+using MongoDB.Driver;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,10 +11,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//MediatR
+var featureAssembly = Assembly.Load("ItOffers.Features");
+builder.Services.AddMediatR(featureAssembly);
+
 builder.WebHost.ConfigureKestrel(c =>
 {
     c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
 });
+
+builder.Services.AddSingleton<IMongoClient>(s =>
+    new MongoClient(builder.Configuration.GetSection("Database").Get<string>())
+);
+
 
 var app = builder.Build();
 
