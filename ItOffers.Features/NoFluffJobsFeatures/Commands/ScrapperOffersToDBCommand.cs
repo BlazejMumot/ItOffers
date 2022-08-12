@@ -18,7 +18,7 @@ namespace ItOffers.Features.NoFluffJobsFeatures.Commands
             var defaultPage = web.Load(baseUrl).QuerySelectorAll("li a.page-link");
             var numberOfPages = int.Parse(defaultPage[defaultPage.Count - 2].InnerText);
             Console.WriteLine("Found " + numberOfPages + " pages");
-            for (int i = 1; i <= 1; i++)
+            for (int i = 1; i <= numberOfPages; i++)
             {
                 var document = web.Load(scrappUrl + i);
 

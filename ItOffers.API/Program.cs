@@ -15,11 +15,6 @@ builder.Services.AddSwaggerGen();
 var featureAssembly = Assembly.Load("ItOffers.Features");
 builder.Services.AddMediatR(featureAssembly);
 
-builder.WebHost.ConfigureKestrel(c =>
-{
-    c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
-});
-
 builder.Services.AddSingleton<IMongoClient>(s =>
     new MongoClient(builder.Configuration.GetSection("Database").Get<string>())
 );
