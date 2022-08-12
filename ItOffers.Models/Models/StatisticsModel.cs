@@ -11,6 +11,6 @@
         public int SecondSeniorityOffersCount { get; set; }
         public string LeastSeniorityOffers { get; set; }
         public int LeastSeniorityOffersCount { get; set; }
-        public DateOnly CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

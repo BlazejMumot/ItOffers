@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ItOffers.Features.StatisticsFeatures.Commands;
-
+using MediatR;
 
 namespace ItOffers.API.Controllers
 {
@@ -8,19 +8,18 @@ namespace ItOffers.API.Controllers
     [Route("[controller]")]
     public class DailyStatisticsController : ControllerBase
     {
-        private readonly ILogger<DailyStatisticsController> _logger;
+        private readonly IMediator _mediator;
 
-        public DailyStatisticsController(ILogger<DailyStatisticsController> logger)
+        public DailyStatisticsController(IMediator mediator)
         {
-            _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public bool Get()
+        public async Task<bool> PostStatistics()
         {
-            var statisticsFeatures = new PostNewStatisticsCommand();
-            statisticsFeatures.CreateStatistics();
-            return true;
+            var statisticsFeatures = await _mediator.Send(new PostNewStatisticsCommand());
+            return statisticsFeatures;
         }
     }
 }
