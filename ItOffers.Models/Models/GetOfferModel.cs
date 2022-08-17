@@ -15,5 +15,6 @@ namespace ItOffers.Models.Models
         public string Tech { get; set; }
         public string Location { get; set; }
         public string Url { get; set; }
+        public string WebSite { get; set; }
     }
 }

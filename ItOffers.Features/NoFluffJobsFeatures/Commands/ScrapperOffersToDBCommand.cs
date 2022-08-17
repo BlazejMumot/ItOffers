@@ -1,32 +1,37 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using ItOffers.Models.Models;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ItOffers.Features.NoFluffJobsFeatures.Commands
 {
     public class ScrappOffersToDBCommand
     {
-        private const string baseUrl = "https://nofluffjobs.com/backend";
-        private const string scrappUrl = "https://nofluffjobs.com/backend?page=";
+        private const string baseUrl = "https://nofluffjobs.com/";
+        private const string scrappUrl = "https://nofluffjobs.com/";
         private static readonly Regex sWhitespace = new Regex(@"\s+|[^0-9.-]");
 
-        public IEnumerable<ScrappOfferModel> GetBackendOffers()
+        public async Task<IEnumerable<ScrappOfferModel>> GetBackendOffersAsync(string urlTech)
         {
             var web = new HtmlWeb();
 
-            var defaultPage = web.Load(baseUrl).QuerySelectorAll("li a.page-link");
+            var defaultPage = web.Load(baseUrl+ urlTech).QuerySelectorAll("li a.page-link");
             var numberOfPages = int.Parse(defaultPage[defaultPage.Count - 2].InnerText);
-            Console.WriteLine("Found " + numberOfPages + " pages");
+            Console.WriteLine("Found " + urlTech + " " + numberOfPages + " pages");
+
+            var offers = new List<ScrappOfferModel>();
+
             for (int i = 1; i <= numberOfPages; i++)
             {
-                var document = web.Load(scrappUrl + i);
+                var document = web.Load(scrappUrl + urlTech + "?page=" + i);
 
                 var offerlist = document.QuerySelectorAll(".posting-list-item");
 
 
                 foreach (var offer in offerlist)
                 {
+
                     double? minSalary, maxSalary, avgSalary;
                     var offerName = offer.QuerySelectorAll("h3").ElementAtOrDefault(0)?.InnerText;
                     var company = offer.QuerySelectorAll(".posting-list-item .d-block").ElementAtOrDefault(0)?.InnerText;
@@ -39,12 +44,28 @@ namespace ItOffers.Features.NoFluffJobsFeatures.Commands
                     var location = offer.QuerySelectorAll(".posting-list-item .posting-info__location").ElementAtOrDefault(0)?.InnerText.Trim() ?? "";
                     location = location.Split(',').First();
                     var url = "https://nofluffjobs.com/job" + offer.GetAttributes("href").Last().Value;
-                    yield return new ScrappOfferModel(offerName, company, seniority, minSalary, maxSalary, avgSalary, currency, tech, location, url);
+                    var scrappedOffer = new ScrappOfferModel()
+                    {
+                        OfferName = offerName,
+                        Company = company,
+                        Seniority = seniority,
+                        MinSalary = minSalary,
+                        MaxSalary = maxSalary,
+                        AvgSalary = avgSalary,
+                        Currency = currency,
+                        Tech = tech,
+                        Location = location,
+                        Url = url,
+                        WebSite = "NoFluffJobs"
+                    };
+                    offers.Add(scrappedOffer);
                 }
                 Console.WriteLine("Page: " + i + "/" + numberOfPages + "\n");
             }
 
+            return offers;
         }
+
         public string checkSeniority(string offerName)
         {
             offerName = offerName.ToUpper();
