@@ -22,7 +22,7 @@ namespace ItOffers.Features.StatisticsFeatures.Commands
                 var avgSalary = collection.Select(o => o.AvgSalary).Average();
                 var avgSeniority = collection.GroupBy(o => o.Seniority).Select(g => new { Key = g.Key, Count = g.Count() }).OrderByDescending(x => x.Count).Take(3).ToList();
                 var statCollection = database.GetCollection<StatisticsModel>("Statistics");
-                statCollection.InsertOne(new StatisticsModel()
+                await statCollection.InsertOneAsync(new StatisticsModel()
                 {
                     Type = "Backend",
                     Amount = collection.Length,
