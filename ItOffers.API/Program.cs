@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 //MediatR
 var featureAssembly = Assembly.Load("ItOffers.Features");
 builder.Services.AddMediatR(featureAssembly);
@@ -21,7 +22,6 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 
 
 var app = builder.Build();
-
 string? port = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrWhiteSpace(port)) { app.Urls.Add("http://*:" + port); }
 
@@ -35,7 +35,10 @@ if (app.Environment.IsDevelopment())
 
 
 //app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseCors(x => x.AllowAnyHeader()
+      .AllowAnyMethod()
+      .AllowAnyOrigin());
 //app.UseAuthorization();
 
 app.MapControllers();
