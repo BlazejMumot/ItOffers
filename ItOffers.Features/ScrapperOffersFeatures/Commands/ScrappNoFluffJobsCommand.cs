@@ -35,13 +35,19 @@ namespace ItOffers.Features.ScrapperOffersFeatures.Commands
                     var collection = database.GetCollection<ScrappOfferModel>(model.Database);
                     await collection.DeleteManyAsync("{}");
 
-                   
+
                     await collection.InsertManyAsync(offersNoFluff);
 
 
                     var logsCollection = database.GetCollection<LogsModel>("Logs");
-                    await logsCollection.InsertOneAsync(new LogsModel() { Action = "Add Offers",
-                        Type = model.Type, Site = "NoFluffJobs", Amount = offersNoFluff.ToArray().Length, DateTime = DateTime.Now });
+                    await logsCollection.InsertOneAsync(new LogsModel()
+                    {
+                        Action = "Add Offers",
+                        Type = model.Type,
+                        Site = "NoFluffJobs",
+                        Amount = offersNoFluff.ToArray().Length,
+                        DateTime = DateTime.Now
+                    });
                 }
 
                 return true;
