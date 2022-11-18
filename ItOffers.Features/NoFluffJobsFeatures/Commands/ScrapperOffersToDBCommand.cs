@@ -10,7 +10,7 @@ namespace ItOffers.Features.NoFluffJobsFeatures.Commands
     {
         private const string baseUrl = "https://nofluffjobs.com/";
         private const string scrappUrl = "https://nofluffjobs.com/";
-        private static readonly Regex sWhitespace = new Regex(@"\s+|[^0-9.-]");
+        private static readonly Regex sWhitespace = new Regex(@"\s+|[^0-9.–]");
 
         public async Task<IEnumerable<ScrappOfferModel>> GetBackendOffersAsync(string urlTech)
         {
@@ -60,7 +60,7 @@ namespace ItOffers.Features.NoFluffJobsFeatures.Commands
                     };
                     offers.Add(scrappedOffer);
                 }
-                Console.WriteLine("Page: " + i + "/" + numberOfPages + "\n");
+            
             }
 
             return offers;
@@ -79,7 +79,8 @@ namespace ItOffers.Features.NoFluffJobsFeatures.Commands
         public void calculateSalary(string salaryString, out double? minSalary, out double? maxSalary, out double? avgSalary)
         {
 
-            var salary = sWhitespace.Replace(salaryString ?? "", "").Split("-");
+            var salary = sWhitespace.Replace(salaryString ?? "", "").Split("–");
+            
             if (salary.Length > 1)
             {
                 minSalary = Double.Parse(salary[0]);
